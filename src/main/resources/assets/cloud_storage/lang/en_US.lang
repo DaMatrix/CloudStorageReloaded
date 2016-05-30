@@ -1,0 +1,11 @@
+item.cloudstorage.configurator.0.name=VPN Tool <Nothing>
+item.cloudstorage.configurator.1.name=VPN Tool <Extract>
+item.cloudstorage.configurator.2.name=VPN Tool <Insert>
+item.cloudstorage.configurator.3.name=VPN Tool <Extract RF>
+item.cloudstorage.configurator.4.name=VPN Tool <Insert RF>
+item.cloudstorage.configurator.5.name=VPN Tool <Extract EU>
+item.cloudstorage.configurator.6.name=VPN Tool <Insert EU>
+item.cloudstorage.configurator.7.name=VPN Tool <Insert MJ>
+item.cloudstorage.configurator.8.name=VPN Tool <Extract Liquid>
+item.cloudstorage.configurator.9.name=VPN Tool <Insert Liquid>
+item.cloudstorage.copier.name=VPN Copier
