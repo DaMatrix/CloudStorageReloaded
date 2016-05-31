@@ -17,7 +17,7 @@ public class GuiBrowser extends BaseGuiContainer<ContainerBrowser> {
 	private ResourceLocation texPath = new ResourceLocation("cloud_storage", "textures/gui/storage.png");
 	
 	public GuiBrowser(ContainerBrowser container) {
-		super(container, 176, 222, new ResourceLocation("cloud_storage", "textures/gui/storage.png"));
+		super(container, 243, 222, new ResourceLocation("cloud_storage", "textures/gui/storage.png"));
 	}
 	
 	@Override
@@ -34,6 +34,9 @@ public class GuiBrowser extends BaseGuiContainer<ContainerBrowser> {
 		
 		//super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
 		searchField.drawTextBox();
+
+		drawStringWithoutShadow("RF: " + ((ContainerBrowser) this.container).storage.storedRF, 176, 8, 0);
+		drawStringWithoutShadow("EU: " + ((ContainerBrowser) this.container).storage.storedEU, 176, 16, 0);
 	}
 	
 	@Override
@@ -41,7 +44,7 @@ public class GuiBrowser extends BaseGuiContainer<ContainerBrowser> {
 		for (int i1 = 0; i1 < this.inventorySlots.inventorySlots.size(); ++i1)
         {
             Slot slot = (Slot)this.inventorySlots.inventorySlots.get(i1);
-            this.func_146977_a_new(slot);
+            this.drawSlot(slot);
         }
 		
 		super.drawGuiContainerForegroundLayer(p_146979_1_, p_146979_2_);
@@ -82,7 +85,7 @@ public class GuiBrowser extends BaseGuiContainer<ContainerBrowser> {
 	}
 
 	// 146977 = drawSlotInventory which is now private
-	protected void func_146977_a_new(Slot par1Slot) {
+	protected void drawSlot(Slot par1Slot) {
 		ItemStack itemstack = par1Slot.getStack();
 		String overrideSizeString = null;
 		

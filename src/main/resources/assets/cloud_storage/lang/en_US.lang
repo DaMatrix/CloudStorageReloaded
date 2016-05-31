@@ -9,3 +9,6 @@ item.cloudstorage.configurator.7.name=VPN Tool <Insert MJ>
 item.cloudstorage.configurator.8.name=VPN Tool <Extract Liquid>
 item.cloudstorage.configurator.9.name=VPN Tool <Insert Liquid>
 item.cloudstorage.copier.name=VPN Copier
+item.itemWirelessAccessPoint.name=Cloud Storage wireless access point
+tile.blockAccessPoint.name=Cloud Storage access point
+ 

@@ -23,6 +23,7 @@ import mods.immibis.cobaltite.ModBase;
 import mods.immibis.cobaltite.NonTileGUI;
 import mods.immibis.cobaltite.PacketType;
 import mods.immibis.core.api.FMLModInfo;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -84,6 +85,10 @@ public class CloudStorage extends ModBase {
 	@AssignedItem(id = "copier")
 	public static ItemCopier itemCopier;
 
+	public static ItemWirelessCloud itemWirelessCloud;
+
+	public static BlockCloudAccessPoint blockCloudAccessPoint;
+
 	/**
 	 * Stores which clouds are shared and which ones aren't. Syntax: key =
 	 * owner, data = shared cloud
@@ -126,6 +131,10 @@ public class CloudStorage extends ModBase {
 	public void base_preinit(FMLPreInitializationEvent evt) {
 		super._preinit(evt);
 		log = evt.getModLog();
+		itemWirelessCloud = new ItemWirelessCloud();
+		GameRegistry.registerItem(itemWirelessCloud, itemWirelessCloud.getUnlocalizedName());
+		blockCloudAccessPoint = new BlockCloudAccessPoint(Material.iron);
+		GameRegistry.registerBlock(blockCloudAccessPoint, blockCloudAccessPoint.getUnlocalizedName());
 	}
 
 	@Override
@@ -138,6 +147,11 @@ public class CloudStorage extends ModBase {
 	protected void addRecipes() throws Exception {
 		GameRegistry.addShapelessRecipe(new ItemStack(itemConfigurator), Blocks.dirt, Items.redstone);
 		GameRegistry.addShapelessRecipe(new ItemStack(itemCopier), Blocks.dirt, Blocks.dirt, Items.redstone);
+		GameRegistry.addRecipe(new ItemStack(itemWirelessCloud),
+				new Object[] { "E  ", "X#X", "RDR", 'E', Items.ender_pearl, 'X', Items.iron_ingot, '#',
+						Blocks.glass_pane, 'R', Items.redstone, 'D', Items.diamond });
+		GameRegistry.addRecipe(new ItemStack(blockCloudAccessPoint), new Object[] { "#E#", "RCR", "#R#", '#',
+				Items.iron_ingot, 'E', Items.ender_pearl, 'R', Items.redstone, 'C', Blocks.chest });
 	}
 
 	@SubscribeEvent
@@ -146,8 +160,8 @@ public class CloudStorage extends ModBase {
 			return;
 
 		for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
-			Storage s = getStorage(((EntityPlayerMP) player).getDisplayName()); // TODO
-																				// WRONG!
+			Storage s = getStorage(((EntityPlayerMP) player).getGameProfile().getName());
+
 			List<CloudActionCoords> toRemove = null;
 			for (Map.Entry<CloudActionCoords, CloudAction> e : s.actions.entrySet()) {
 				CloudActionCoords key = e.getKey();
@@ -183,29 +197,23 @@ public class CloudStorage extends ModBase {
 
 	@EventHandler
 	public void onServerStart(FMLServerStartingEvent evt) {
-		evt.registerServerCommand(new CommandBase() {
-			@Override
-			public void processCommand(ICommandSender icommandsender, String[] astring) {
-				if (icommandsender instanceof EntityPlayerMP)
-					((EntityPlayerMP) icommandsender).openGui(INSTANCE, GUI_BROWSE,
-							((EntityPlayerMP) icommandsender).worldObj, 0, 0, 0);
-			}
-
-			@Override
-			public String getCommandUsage(ICommandSender icommandsender) {
-				return "/cloud";
-			}
-
-			@Override
-			public boolean canCommandSenderUseCommand(ICommandSender par1iCommandSender) {
-				return par1iCommandSender instanceof EntityPlayer;
-			}
-
-			@Override
-			public String getCommandName() {
-				return "cloud";
-			}
-		});
+		/*
+		 * evt.registerServerCommand(new CommandBase() {
+		 * 
+		 * @Override public void processCommand(ICommandSender icommandsender,
+		 * String[] astring) { if (icommandsender instanceof EntityPlayerMP)
+		 * ((EntityPlayerMP) icommandsender).openGui(INSTANCE, GUI_BROWSE,
+		 * ((EntityPlayerMP) icommandsender).worldObj, 0, 0, 0); }
+		 * 
+		 * @Override public String getCommandUsage(ICommandSender
+		 * icommandsender) { return "/cloud"; }
+		 * 
+		 * @Override public boolean canCommandSenderUseCommand(ICommandSender
+		 * par1iCommandSender) { return par1iCommandSender instanceof
+		 * EntityPlayer; }
+		 * 
+		 * @Override public String getCommandName() { return "cloud"; } });
+		 */
 		evt.registerServerCommand(new CommandBase() {
 			@Override
 			public void processCommand(ICommandSender icommandsender, String[] astring) {
@@ -321,49 +329,140 @@ public class CloudStorage extends ModBase {
 				return "clouddecline";
 			}
 		});
+		evt.registerServerCommand(new CommandBase() {
+			@Override
+			public void processCommand(ICommandSender icommandsender, String[] astring) {
+				try {
+					if (astring[0].equals(null) || astring[0].equals("")) {
+						return;
+					}
+				} catch (IndexOutOfBoundsException e) {
+					return;
+				}
+				if (!(icommandsender instanceof EntityPlayerMP)) {
+					return;
+				}
+				if (CloudStorage.INSTANCE.getPlayer(astring[0]) == null) {
+					return;
+				}
+				CloudStorage.INSTANCE.sharedClouds.remove(astring[0]);
+				EntityPlayer player = CloudStorage.INSTANCE.getPlayer(astring[0]);
+				player.addChatMessage(new ChatComponentText("You have been kicked from "
+						+ ((EntityPlayerMP) icommandsender).getDisplayName() + "'s cloud."));
+				((EntityPlayerMP) icommandsender)
+						.addChatMessage(new ChatComponentText("Player " + astring[0] + " kicked."));
+				// ((EntityPlayerMP)icommandsender).openGui(INSTANCE,
+				// GUI_BROWSE, ((EntityPlayerMP)icommandsender).worldObj, 0, 0,
+				// 0);
+			}
+
+			@Override
+			public String getCommandUsage(ICommandSender icommandsender) {
+				return "/cloudkick <name>";
+			}
+
+			@Override
+			public boolean canCommandSenderUseCommand(ICommandSender par1iCommandSender) {
+				return par1iCommandSender instanceof EntityPlayer;
+			}
+
+			@Override
+			public String getCommandName() {
+				return "cloudkick";
+			}
+		});
+		evt.registerServerCommand(new CommandBase() {
+			@Override
+			public void processCommand(ICommandSender icommandsender, String[] astrinag) {
+				if (!(icommandsender instanceof EntityPlayerMP)) {
+					return;
+				}
+				if ((!CloudStorage.INSTANCE.sharedClouds
+						.containsKey(((EntityPlayerMP) icommandsender).getGameProfile().getName()))) {
+					((EntityPlayerMP) icommandsender)
+							.addChatMessage(new ChatComponentText("You are not sharing someone else's cloud!"));
+					return;
+				}
+				EntityPlayer player = CloudStorage.INSTANCE.getPlayer(CloudStorage.INSTANCE.sharedClouds
+						.get(((EntityPlayerMP) icommandsender).getGameProfile().getName()));
+				CloudStorage.INSTANCE.sharedClouds.remove(((EntityPlayerMP) icommandsender).getGameProfile().getName());
+				player.addChatMessage(new ChatComponentText(
+						"" + ((EntityPlayerMP) icommandsender).getDisplayName() + " has left your cloud."));
+				((EntityPlayerMP) icommandsender)
+						.addChatMessage(new ChatComponentText("You successfully left someone's cloud"));
+			}
+
+			@Override
+			public String getCommandUsage(ICommandSender icommandsender) {
+				return "/cloudleave";
+			}
+
+			@Override
+			public boolean canCommandSenderUseCommand(ICommandSender par1iCommandSender) {
+				return par1iCommandSender instanceof EntityPlayer;
+			}
+
+			@Override
+			public String getCommandName() {
+				return "cloudleave";
+			}
+		});
+		CloudStorage.INSTANCE.readSharesFromFile(evt.getServer().getWorldName());
 	}
+
+	public static String worldName = "";
 
 	@EventHandler
 	public void onServerStop(FMLServerStoppingEvent e) {
 		try {
-			saveSharesToFile(CloudStorage.INSTANCE.sharedClouds);
+			saveSharesToFile(CloudStorage.INSTANCE.sharedClouds, CloudStorage.INSTANCE.worldName);
 		} catch (FileNotFoundException e1) {
 			CloudStorage.INSTANCE.log.log(Level.ERROR, "Failed to save shared clouds: java.io.FileNotFoundException");
 		} catch (UnsupportedEncodingException e1) {
-			CloudStorage.INSTANCE.log.log(Level.ERROR, "Failed to save shared clouds: java.io.UnsupportedEncodingException");
+			CloudStorage.INSTANCE.log.log(Level.ERROR,
+					"Failed to save shared clouds: java.io.UnsupportedEncodingException");
 		}
 	}
 
-	public static void saveSharesToFile(HashMap<String, String> map) throws FileNotFoundException, UnsupportedEncodingException {
-		PrintWriter writer = new PrintWriter(getWorkingFolder() + getWorkingFolder().separator + "sharedclouds.txt", "UTF-8");
+	public static void saveSharesToFile(HashMap<String, String> map, String name)
+			throws FileNotFoundException, UnsupportedEncodingException {
+		PrintWriter writer = new PrintWriter(getWorkingFolder() + getWorkingFolder().separator + name
+				+ getWorkingFolder().separator + "sharedclouds.txt", "UTF-8");
 		Iterator it = map.keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
 			// Logic
-			writer.println(key + "¬"/*Random char nobody has in their name*/ + map.get(key));
+			writer.println(key + "¬"/* Random char nobody has in their name */ + map.get(key));
 			// System.out.println(key + " = " + map.get(key));
-			/*if (map.get(key) instanceof HashMap)
-				iterateHashMap((HashMap) map.get(key));*/
+			/*
+			 * if (map.get(key) instanceof HashMap) iterateHashMap((HashMap)
+			 * map.get(key));
+			 */
 		}
+
 		writer.close();
 	}
-	
-	public static void readSharesFromFile(HashMap<String, String> map)	{
+
+	public static void readSharesFromFile(String name) {
+
+		CloudStorage.INSTANCE.worldName = name;
+
 		try {
-			File file = new File(getWorkingFolder() + getWorkingFolder().separator + "sharedclouds.txt");
+			File file = new File(getWorkingFolder() + getWorkingFolder().separator + name + getWorkingFolder().separator
+					+ "sharedclouds.txt");
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			//StringBuffer stringBuffer = new StringBuffer();
+			// StringBuffer stringBuffer = new StringBuffer();
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
-				//stringBuffer.append(line);
-				//stringBuffer.append("\n");
+				// stringBuffer.append(line);
+				// stringBuffer.append("\n");
 				String[] split = line.split("¬");
 				CloudStorage.INSTANCE.sharedClouds.put(split[0], split[1]);
 			}
 			fileReader.close();
-			//System.out.println("Contents of file:");
-			//System.out.println(stringBuffer.toString());
+			// System.out.println("Contents of file:");
+			// System.out.println(stringBuffer.toString());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

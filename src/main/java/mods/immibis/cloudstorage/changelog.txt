@@ -1,3 +1,10 @@
+60.0.0:
+* Now mantained by DaPorkchop! yaaay!
+- removed /cloud command
++ added commands to share and unshare your cloud
++ added a handheld item to access your cloud
++ added a block to access your cloud
+
 59.0.0:
 * Updated to 1.7.10.
 

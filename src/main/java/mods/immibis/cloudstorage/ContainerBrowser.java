@@ -23,7 +23,7 @@ public class ContainerBrowser extends BaseContainer<Object> {
 		super(ply, null);
 		
 		if(ply instanceof EntityPlayerMP)
-			storage = CloudStorage.getStorage(ply.getDisplayName()); // TODO this is wrong still
+			storage = CloudStorage.getStorage(ply.getGameProfile().getName());
 		else
 			storage = new Storage("");
 		
@@ -37,13 +37,14 @@ public class ContainerBrowser extends BaseContainer<Object> {
 		for(int y = 0; y < HEIGHT; y++)
 			for(int x = 0; x < WIDTH; x++)
 				addSlotToContainer(new SlotExtended(fakeInventory, x + y*WIDTH, 8 + 18*x, 20 + 18*y));
+		
 	}
 	
 	@Override
 	public void onUpdatePacket(IPacket p) {
 		if(p instanceof PacketStorageInfo)
 		{
-			System.out.println("received update packet");
+			//System.out.println("received update packet");
 			storage.items = ((PacketStorageInfo)p).data;
 			needUpdateVisibleIDs = true;
 		}
@@ -67,7 +68,7 @@ public class ContainerBrowser extends BaseContainer<Object> {
 		PacketStorageInfo p = new PacketStorageInfo();
 		p.data = storage.items;
 		sendUpdatePacket(p);
-		System.out.println("send update packet");
+		//System.out.println("send update packet");
 	}
 	
 	@Override
@@ -90,8 +91,8 @@ public class ContainerBrowser extends BaseContainer<Object> {
 	public static class SlotExtended extends Slot
 	{
 
-		public SlotExtended(IInventory par1iInventory, int par2, int par3, int par4) {
-			super(par1iInventory, par2, par3, par4);
+		public SlotExtended(IInventory inv, int index, int x, int y) {
+			super(inv, index, x, y);
 		}
 		
 		@Override
