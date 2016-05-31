@@ -1,5 +1,9 @@
 60.0.0:
+<<<<<<< refs/remotes/origin/master
 * Now mantained by DaPorkchop! yaaay!
+=======
+* Now maintained by DaPorkchop! yaaay!
+>>>>>>> v60.0.0! yay!
 - removed /cloud command
 + added commands to share and unshare your cloud
 + added a handheld item to access your cloud

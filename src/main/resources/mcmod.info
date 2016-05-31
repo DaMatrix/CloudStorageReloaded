@@ -1,0 +1,19 @@
+[
+{
+"modid": "Cloud Storage",
+"name": "CloudStorageReloaded",
+"description": "Totally not OP",
+"version": "60.0.0",
+"credits": "",
+"logoFile": "",
+"mcversion": "1.7.10",
+"url": "",
+"updateUrl": "https://github.com/DaMatrix/CloudStorageReloaded",
+"authors": [ "immibis", "DaPorkchop" ],
+"parent":"",
+"screenshots": [],
+"dependencies": [
+     "mod_MinecraftForge"
+]
+}
+]
