@@ -24,6 +24,7 @@ import mods.immibis.cobaltite.ModBase;
 import mods.immibis.cobaltite.NonTileGUI;
 import mods.immibis.cobaltite.PacketType;
 import mods.immibis.core.api.FMLModInfo;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -32,6 +33,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
@@ -85,9 +87,9 @@ public class CloudStorage extends ModBase {
 	@AssignedItem(id = "copier")
 	public static ItemCopier itemCopier;
 
-	public static ItemWirelessCloud itemWirelessCloud;
+	public static Item itemWirelessCloud;
 
-	public static BlockCloudAccessPoint blockCloudAccessPoint;
+	public static Block blockCloudAccessPoint;
 
 	/**
 	 * Stores which clouds are shared and which ones aren't. Syntax: key =
@@ -129,12 +131,12 @@ public class CloudStorage extends ModBase {
 
 	@EventHandler
 	public void base_preinit(FMLPreInitializationEvent evt) {
-		super._preinit(evt);
 		log = evt.getModLog();
 		itemWirelessCloud = new ItemWirelessCloud();
 		GameRegistry.registerItem(itemWirelessCloud, itemWirelessCloud.getUnlocalizedName());
 		blockCloudAccessPoint = new BlockCloudAccessPoint(Material.iron);
 		GameRegistry.registerBlock(blockCloudAccessPoint, blockCloudAccessPoint.getUnlocalizedName());
+		super._preinit(evt);
 	}
 
 	@Override
