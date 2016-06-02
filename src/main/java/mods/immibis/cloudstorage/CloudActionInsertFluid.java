@@ -3,7 +3,9 @@ package mods.immibis.cloudstorage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -23,7 +25,7 @@ public class CloudActionInsertFluid extends CloudActionFiltered {
 				if(insertedFluid == null)
 					continue;
 				
-				if(stock(ifh, insertedFluid.getFluidID(), s, ForgeDirection.VALID_DIRECTIONS[coords.side]))
+				if(stock(ifh, FluidRegistry.getFluidID(insertedFluid.getFluid().getName()), s, ForgeDirection.VALID_DIRECTIONS[coords.side]))
 					break;
 			}
 		

@@ -38,12 +38,9 @@ public class GuiBrowser extends BaseGuiContainer<ContainerBrowser> {
 
 		drawStringWithoutShadow("RF: " + ((ContainerBrowser) this.container).storage.storedRF, 176, 8, 0);
 		drawStringWithoutShadow("EU: " + ((ContainerBrowser) this.container).storage.storedEU, 176, 16, 0);
-<<<<<<< refs/remotes/origin/master
-=======
 		//TODO show fluids somehow
 		
 		//CloudStorage.INSTANCE.log.log(Level.INFO, "Drew background");
->>>>>>> v60.0.0! yay!
 	}
 	
 	@Override

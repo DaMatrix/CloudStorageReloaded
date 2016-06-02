@@ -3,6 +3,7 @@ package mods.immibis.cloudstorage;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -21,7 +22,7 @@ public class CloudActionExtractFluid extends CloudAction {
 		if(drained == null)
 			return true;
 		
-		int fluidID = drained.getFluidID();
+		int fluidID = FluidRegistry.getFluidID(drained.getFluid().getName());
 		
 		if(s.getFluidQty(fluidID) > Integer.MAX_VALUE)
 			return true;

@@ -194,7 +194,6 @@ public class CloudStorage extends ModBase {
 
 	@EventHandler
 	public void onServerStart(FMLServerStartingEvent evt) {
-<<<<<<< refs/remotes/origin/master
 		/*
 		 * evt.registerServerCommand(new CommandBase() {
 		 * 
@@ -212,10 +211,8 @@ public class CloudStorage extends ModBase {
 		 * 
 		 * @Override public String getCommandName() { return "cloud"; } });
 		 */
-=======
 		CloudStorage.INSTANCE.sharedClouds.clear();
 		CloudStorage.INSTANCE.pendingShares.clear();
->>>>>>> v60.0.0! yay!
 		evt.registerServerCommand(new CommandBase() {
 			@Override
 			public void processCommand(ICommandSender icommandsender, String[] astring) {
@@ -341,7 +338,6 @@ public class CloudStorage extends ModBase {
 				if (!(icommandsender instanceof EntityPlayerMP)) {
 					return;
 				}
-<<<<<<< refs/remotes/origin/master
 				if (CloudStorage.INSTANCE.getPlayer(astring[0]) == null) {
 					return;
 				}
@@ -354,14 +350,12 @@ public class CloudStorage extends ModBase {
 				// ((EntityPlayerMP)icommandsender).openGui(INSTANCE,
 				// GUI_BROWSE, ((EntityPlayerMP)icommandsender).worldObj, 0, 0,
 				// 0);
-=======
 				if (CloudStorage.INSTANCE.sharedClouds.get(astring[0]).equals(((EntityPlayerMP) icommandsender).getGameProfile().getName())) {
 					return;
 				}
 				CloudStorage.INSTANCE.sharedClouds.remove(astring[0]);
 				((EntityPlayerMP) icommandsender)
 						.addChatMessage(new ChatComponentText("Player " + astring[0] + " kicked."));
->>>>>>> v60.0.0! yay!
 			}
 
 			@Override
@@ -391,15 +385,12 @@ public class CloudStorage extends ModBase {
 							.addChatMessage(new ChatComponentText("You are not sharing someone else's cloud!"));
 					return;
 				}
-<<<<<<< refs/remotes/origin/master
 				EntityPlayer player = CloudStorage.INSTANCE.getPlayer(CloudStorage.INSTANCE.sharedClouds
 						.get(((EntityPlayerMP) icommandsender).getGameProfile().getName()));
 				CloudStorage.INSTANCE.sharedClouds.remove(((EntityPlayerMP) icommandsender).getGameProfile().getName());
 				player.addChatMessage(new ChatComponentText(
 						"" + ((EntityPlayerMP) icommandsender).getDisplayName() + " has left your cloud."));
-=======
 				CloudStorage.INSTANCE.sharedClouds.remove(((EntityPlayerMP) icommandsender).getGameProfile().getName());
->>>>>>> v60.0.0! yay!
 				((EntityPlayerMP) icommandsender)
 						.addChatMessage(new ChatComponentText("You successfully left someone's cloud"));
 			}
@@ -419,8 +410,6 @@ public class CloudStorage extends ModBase {
 				return "cloudleave";
 			}
 		});
-<<<<<<< refs/remotes/origin/master
-=======
 		evt.registerServerCommand(new CommandBase() {
 			@Override
 			public void processCommand(ICommandSender icommandsender, String[] astring) {
@@ -453,8 +442,7 @@ public class CloudStorage extends ModBase {
 				return "cloudforceshare";
 			}
 		});
->>>>>>> v60.0.0! yay!
-		CloudStorage.INSTANCE.readSharesFromFile(evt.getServer().getWorldName());
+		CloudStorage.INSTANCE.readSharesFromFile(evt.getServer().worldServers[0].getWorldInfo().getWorldName());
 	}
 
 	public static String worldName = "";
@@ -475,28 +463,13 @@ public class CloudStorage extends ModBase {
 
 	public static void saveSharesToFile(HashMap<String, String> map, String name)
 			throws FileNotFoundException, UnsupportedEncodingException {
-<<<<<<< refs/remotes/origin/master
-		PrintWriter writer = new PrintWriter(getWorkingFolder() + getWorkingFolder().separator + name
-				+ getWorkingFolder().separator + "sharedclouds.txt", "UTF-8");
-		Iterator it = map.keySet().iterator();
-		while (it.hasNext()) {
-			String key = (String) it.next();
-			// Logic
-			writer.println(key + "Â¬"/* Random char nobody has in their name */ + map.get(key));
-			// System.out.println(key + " = " + map.get(key));
-			/*
-			 * if (map.get(key) instanceof HashMap) iterateHashMap((HashMap)
-			 * map.get(key));
-			 */
-=======
 		File f = new File(getWorkingFolder() + getWorkingFolder().separator + name + "-sharedclouds.txt");
 		f.delete();
 		PrintWriter writer = new PrintWriter(new FileOutputStream(getWorkingFolder() + getWorkingFolder().separator + name + "-sharedclouds.txt", false));
 		Iterator it = map.keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			writer.println(key + "¬"/* Random char nobody has in their name */ + map.get(key));
->>>>>>> v60.0.0! yay!
+			writer.println(key + "|"/* Random char nobody has in their name */ + map.get(key));
 		}
 
 		writer.close();
@@ -507,35 +480,19 @@ public class CloudStorage extends ModBase {
 		CloudStorage.INSTANCE.worldName = name;
 
 		try {
-<<<<<<< refs/remotes/origin/master
-			File file = new File(getWorkingFolder() + getWorkingFolder().separator + name + getWorkingFolder().separator
-					+ "sharedclouds.txt");
-			FileReader fileReader = new FileReader(file);
-			BufferedReader bufferedReader = new BufferedReader(fileReader);
-			// StringBuffer stringBuffer = new StringBuffer();
-			String line;
-			while ((line = bufferedReader.readLine()) != null) {
-				// stringBuffer.append(line);
-				// stringBuffer.append("\n");
-				String[] split = line.split("Â¬");
-				CloudStorage.INSTANCE.sharedClouds.put(split[0], split[1]);
-			}
-			fileReader.close();
 			// System.out.println("Contents of file:");
 			// System.out.println(stringBuffer.toString());
-=======
 			File file = new File(getWorkingFolder() + getWorkingFolder().separator + name + "-sharedclouds.txt");
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
-				String[] split = line.split("¬");
+				String[] split = line.split("|");
 				CloudStorage.INSTANCE.sharedClouds.put(split[0], split[1]);
 			}
 			fileReader.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("file sharedclouds not found, ignoring");
->>>>>>> v60.0.0! yay!
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
